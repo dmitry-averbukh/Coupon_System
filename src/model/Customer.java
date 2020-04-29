@@ -16,6 +16,14 @@ public class Customer {
         coupons = new HashSet<>();
     }
 
+    public Customer(long id, String firstName, String lastName, String email, String password) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         return "Customer{" +

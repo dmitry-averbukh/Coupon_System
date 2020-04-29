@@ -14,6 +14,9 @@ public class Company {
         coupons=new HashSet<>();
     }
 
+    public Company(long id, String name, String email, String password) {
+    }
+
     public long getId() {
         return id;
     }

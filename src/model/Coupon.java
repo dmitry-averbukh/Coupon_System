@@ -93,4 +93,21 @@ public class Coupon {
     public void setImage(String image) {
         this.image = image;
     }
+
+    @Override
+    public String toString() {
+        return "Coupon" +
+                "\n"+
+                "{id=" + id +
+                ", companyId=" + companyId +
+                ", category=" + category +
+                ", title='" + title + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", amount=" + amount +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", image='" + image + '\'' +
+                '}' +"\n";
+    }
 }
