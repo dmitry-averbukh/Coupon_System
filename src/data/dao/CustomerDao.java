@@ -2,6 +2,8 @@ package data.dao;
 
 import common.ex.NoSuchCustumerException;
 import common.ex.SystemMalfunctionException;
+import data.ex.CouponAlreayPurcuaseExeption;
+import data.ex.NoSuchCouponException;
 import model.Coupon;
 import model.Customer;
 
@@ -25,7 +27,7 @@ public interface CustomerDao {
 
     Collection<Coupon> getCoupons(long customerId) throws SystemMalfunctionException, SQLException, NoSuchCustumerException;
 
-    void insertCustomerCoupon(long couponId, long customerId) throws SystemMalfunctionException;
+    void insertCustomerCoupon(long couponId, long customerId) throws SystemMalfunctionException, NoSuchCouponException, NoSuchCustumerException, SQLException, CouponAlreayPurcuaseExeption;
 
     Customer login(String email, String password) throws SystemMalfunctionException;
 }

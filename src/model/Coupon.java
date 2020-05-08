@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.Date;
+import java.util.Objects;
 
 public class Coupon {
     private long id = -1;
@@ -109,5 +110,19 @@ public class Coupon {
                 ", price=" + price +
                 ", image='" + image + '\'' +
                 '}' +"\n";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Coupon)) return false;
+        Coupon coupon = (Coupon) o;
+        return id == coupon.id &&
+                Objects.equals(title, coupon.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title);
     }
 }

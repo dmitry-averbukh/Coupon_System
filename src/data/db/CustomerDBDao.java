@@ -5,12 +5,15 @@ import common.StatementUtils;
 import common.ex.NoSuchCustumerException;
 import common.ex.SystemMalfunctionException;
 import data.dao.CustomerDao;
+import data.ex.CouponAlreayPurcuaseExeption;
+import data.ex.NoSuchCouponException;
 import model.Coupon;
 import model.Customer;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @SuppressWarnings("LoopStatementThatDoesntLoop")
 public class CustomerDBDao implements CustomerDao {
@@ -162,7 +165,18 @@ public class CustomerDBDao implements CustomerDao {
     }
 
     @Override
-    public void insertCustomerCoupon(long couponId, long customerId) throws SystemMalfunctionException {
+    public void insertCustomerCoupon(long couponId, long customerId) throws SystemMalfunctionException, NoSuchCouponException, NoSuchCustumerException, SQLException, CouponAlreayPurcuaseExeption {
+        CouponDBDao couponDBDao = new CouponDBDao();
+
+        if (couponDBDao.getCoupon(couponId)==null) {
+            throw new NoSuchCouponException("You dont have coupon with that id!!!");
+        }
+        if (getCustomer(customerId)==null)
+            throw new NoSuchCustumerException("You dont have costumer with that id!!!");
+
+        if (getCoupons(customerId).contains(couponDBDao.getCoupon(couponId)))
+            throw new CouponAlreayPurcuaseExeption("You already have that coupon!!!");
+
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
