@@ -9,14 +9,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ConnectionPool {
-    private static ConnectionPool instance;
 
     private static final int MAX_CONNECTIONS = 10;
+    private static ConnectionPool instance;
     private final BlockingQueue<Connection> connections;
 
     private ConnectionPool() throws SystemMalfunctionException {
         connections = new LinkedBlockingQueue<>(MAX_CONNECTIONS);
-
         try {
             for (int i = 0; i < MAX_CONNECTIONS; i++) {
                 connections.offer(createConnection());

@@ -145,8 +145,9 @@ public class CouponDBDao implements CouponDao {
                 .executeQuery(Schema.GET_ALL_COUPONS_CATEG + category);
         while (resultSetOfSelectedCoupons.next()) {
             allCoupons.add(getCoupon(resultSetOfSelectedCoupons.getLong(1)));
-        }if (allCoupons.size()!=0)
-         return allCoupons;
+        }
+        if (allCoupons.size() != 0)
+            return allCoupons;
         else
             throw new NoSuchCouponException("you don't have coupon with that category!");
     }

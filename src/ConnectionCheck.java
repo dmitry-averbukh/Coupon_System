@@ -1,20 +1,19 @@
-import common.ex.NoSuchCustumerException;
+import common.ex.NoSuchCustomerException;
 import common.ex.SystemMalfunctionException;
 import data.db.CompanyDBDao;
 import data.db.CouponDBDao;
 import data.db.CustomerDBDao;
-import data.ex.CouponAlreayPurcuaseExeption;
+import data.ex.CouponAlreadyPurchaseException;
 import data.ex.NoSuchCompanyException;
 import data.ex.NoSuchCouponException;
 import data.ex.ZeroCouponAmountException;
-
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionCheck {
-    public static void main(String[] args) throws SystemMalfunctionException, NoSuchCompanyException, NoSuchCustumerException, SQLException, ZeroCouponAmountException, NoSuchCouponException, CouponAlreayPurcuaseExeption {
+    public static void main(String[] args) throws SystemMalfunctionException, NoSuchCompanyException, NoSuchCustomerException, SQLException, ZeroCouponAmountException, NoSuchCouponException, CouponAlreadyPurchaseException {
         try {
             Connection connection = getConnection();
             System.out.println("Success!");
@@ -25,9 +24,8 @@ public class ConnectionCheck {
         CustomerDBDao customerDBDao = new CustomerDBDao();
         CompanyDBDao companyDBDao = new CompanyDBDao();
         CouponDBDao couponDBDao = new CouponDBDao();
-        customerDBDao.insertCustomerCoupon(1,2);
+        customerDBDao.insertCustomerCoupon(2,2);
     }
-
 
     private static Connection getConnection() throws SQLException {
         String url = "jdbc:mysql://localhost:3306/Coupon_system?serverTimezone=UTC";
@@ -38,3 +36,4 @@ public class ConnectionCheck {
     }
 }
 
+// TODO: 09/05/2020 удалить этот метод перед сдачей первой части проекта 

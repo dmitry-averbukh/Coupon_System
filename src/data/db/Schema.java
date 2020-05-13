@@ -6,7 +6,6 @@ public class Schema {
     private static final String TABLE_NAME_CUSTOMER = "customer";
     private static final String COL_COMPANY_ID = "company_id";
     private static final String COL_ID = "id";
-    public static final String SELECT_ID_COMPANIES = "select " + COL_ID + " from " + TABLE_NAME_COMPANY;
     private static final String COL_NAME = "name";
     private static final String COL_EMAIL = "email";
     private static final String COL_PASSWORD = "password";
@@ -21,21 +20,9 @@ public class Schema {
     private static final String COL_PRICE = "price";
     private static final String COL_IMAGE = "image";
 
-
-    public static final String REMOVE_CUSTOMER = "delete from customer where id= ?";
-    public static final String GET_CUSTOMER = "SELECT * FROM coupon_system.customer where id =";
-    public static final String GET_ALL_CUSTOMERS = "SELECT * FROM coupon_system.customer";
-    public static final String GET_CUSTOMER_COUPONS = "SELECT * FROM coupon_system.customer_coupon where customer_id = ";
-    public static final String GET_COUPON = "SELECT * FROM coupon_system.coupon where id = ";
-    public static final String SET_CUSTOMER_COUPON = "insert into customer_coupon (coupon_id,customer_id) values (%d,%d)";
-    public static final String CHECK_CUSTOMER = "SELECT password,id FROM customer where email = '%s'";
-
-
-    public static final String DELETE_COMPANY = "delete from " + TABLE_NAME_COMPANY
-            + " where " + COL_ID + " = ?";
-
-    public static final String SELECT_COMPANY_BY_ID = "select * from " + TABLE_NAME_COMPANY
-            + " where " + COL_ID + "=?";
+    /**
+    SQL commands working with "company" table;
+     */
 
     public static final String INSERT_COMPANY = "insert into " + TABLE_NAME_COMPANY
             + "("
@@ -56,7 +43,41 @@ public class Schema {
             + " where " + COL_EMAIL + "=?" +
             " and " +
             COL_PASSWORD + "=?";
+    public static final String DELETE_COMPANY = "delete from " + TABLE_NAME_COMPANY
+            + " where " + COL_ID + " = ?";
+    public static final String SELECT_COMPANY_BY_ID = "select * from " + TABLE_NAME_COMPANY
+            + " where " + COL_ID + "=?";
+    public static final String SELECT_ID_COMPANIES = "select " + COL_ID + " from " + TABLE_NAME_COMPANY;
 
+    /**
+     SQL commands working with "coustomer" table;
+     */
+
+    public static final String INSERT_CUSTOMER = "insert into " + TABLE_NAME_CUSTOMER
+            + "("
+            + COL_FIRST_NAME + ","
+            + COL_LAST_NAME + ","
+            + COL_EMAIL + ","
+            + COL_PASSWORD
+            + ")" +
+            " values "
+            + "(?,?,?,?)";
+    public static final String REMOVE_CUSTOMER = "delete from customer where id= ?";
+    public static final String UPDATE_COUSTOMER = "UPDATE customer SET" +
+            " first_name=?" +
+            ",last_name=?" +
+            ",email=?" +
+            ",password=? " +
+            "WHERE id= ?";
+    public static final String CHECK_CUSTOMER = "SELECT password,id FROM customer where email = '%s'";
+    public static final String GET_CUSTOMER = "SELECT * FROM coupon_system.customer where id =";
+    public static final String GET_ALL_CUSTOMERS = "SELECT * FROM coupon_system.customer";
+
+    /**
+     SQL commands working with "coupon" table;
+     */
+
+    public static final String GET_COUPON = "SELECT * FROM coupon_system.coupon where id = ";
     public static final String SELECT_COUPONS_BY_COMPANY_ID = "select * from " + TABLE_NAME_COUPON
             + " where " + COL_COMPANY_ID + "=?";
     public static final String REMOVE_COUPON = "delete from coupon where id= ?";
@@ -76,23 +97,6 @@ public class Schema {
             + ")" +
             " values "
             + "(?,?,?,?,?,?,?,?,?)";
-
-    public static final String UPDATE_COUSTOMER = "UPDATE customer SET" +
-            " first_name=?" +
-            ",last_name=?" +
-            ",email=?" +
-            ",password=? " +
-            "WHERE id= ?";
-
-    public static final String INSERT_CUSTOMER = "insert into " + TABLE_NAME_CUSTOMER
-            + "("
-            + COL_FIRST_NAME + ","
-            + COL_LAST_NAME + ","
-            + COL_EMAIL + ","
-            + COL_PASSWORD
-            + ")" +
-            " values "
-            + "(?,?,?,?)";
     public static final String UPDATE_COUPON = "UPDATE COUPON SET" +
             " company_id=?" +
             ",category=?" +
@@ -108,4 +112,10 @@ public class Schema {
             " amount = amount - 1" +
             " where id = ?" +
             " and amount > 0";
+    /**
+     SQL commands working with "coustomer_coupons" table;
+     */
+
+    public static final String GET_CUSTOMER_COUPONS = "SELECT * FROM coupon_system.customer_coupon where customer_id = ";
+    public static final String SET_CUSTOMER_COUPON = "insert into customer_coupon (coupon_id,customer_id) values (%d,%d)";
 }

@@ -8,6 +8,11 @@ import model.Coupon;
 
 import java.util.Collection;
 import java.util.Set;
+
+/**
+ * This interface is used to define a Data Access Object for the company data-source.
+ */
+
 public interface CompanyDao {
     void createCompany(Company company) throws SystemMalfunctionException;
 

@@ -9,7 +9,10 @@ import data.ex.NoSuchCompanyException;
 import model.Company;
 import model.Coupon;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,11 +21,33 @@ import java.util.Set;
 public class CompanyDBDao implements CompanyDao {
 
     private static void applyCompanyValuesOnStatement(PreparedStatement ps
-                                   ,Company company) throws SQLException {
-
+            , Company company) throws SQLException {
         ps.setString(1, company.getName());
         ps.setString(2, company.getEmail());
         ps.setString(3, company.getPassword());
+    }
+
+    private static Company resultSetToCompany(ResultSet rs) throws SQLException {
+        long id = rs.getLong(1);
+        String name = rs.getString(2);
+        String email = rs.getString(3);
+        String password = rs.getString(4);
+        return new Company(id, name, email, password);
+    }
+
+    private static Coupon resultSetToCoupon(ResultSet rs) throws SQLException {
+        Coupon coupon = new Coupon();
+        coupon.setId(rs.getLong(1));
+        coupon.setCompanyId(rs.getLong(2));
+        coupon.setCategory(rs.getInt(3));
+        coupon.setTitle(rs.getString(4));
+        coupon.setStartDate(rs.getDate(5));
+        coupon.setEndDate(rs.getDate(6));
+        coupon.setAmount(rs.getInt(7));
+        coupon.setDescription(rs.getString(8));
+        coupon.setPrice(rs.getDouble(9));
+        coupon.setImage(rs.getString(10));
+        return coupon;
     }
 
     @Override
@@ -40,7 +65,6 @@ public class CompanyDBDao implements CompanyDao {
             StatementUtils.close(ps);
         }
     }
-
 
     @Override
     public void removeCompany(long id) throws NoSuchCompanyException, SystemMalfunctionException {
@@ -67,11 +91,9 @@ public class CompanyDBDao implements CompanyDao {
     @Override
     public void updateCompany(Company company) throws SystemMalfunctionException, NoSuchCompanyException {
         long id = company.getId();
-
         if (id <= 0) {
             throw new NoSuchCompanyException("Unable to update company with id: " + id);
         }
-
         Connection connection = ConnectionPool.getInstance().getConnection();
         PreparedStatement ps = null;
         try {
@@ -115,11 +137,9 @@ public class CompanyDBDao implements CompanyDao {
 
     @Override
     public Company getCompany(long id) throws SystemMalfunctionException, NoSuchCompanyException {
-
         if (id <= 0) {
             throw new NoSuchCompanyException("Unable to get company with id: " + id);
         }
-
         Connection connection = ConnectionPool.getInstance().getConnection();
         Company company;
         PreparedStatement ps = null;
@@ -141,33 +161,7 @@ public class CompanyDBDao implements CompanyDao {
             ConnectionPool.getInstance().returnConnection(connection);
             StatementUtils.close(ps);
         }
-
         return company;
-    }
-
-    private static Company resultSetToCompany(ResultSet rs) throws SQLException {
-        long id = rs.getLong(1);
-        String name = rs.getString(2);
-        String email = rs.getString(3);
-        String password = rs.getString(4);
-
-        return new Company(id, name, email, password);
-    }
-
-    private static Coupon resultSetToCoupon(ResultSet rs) throws SQLException {
-        Coupon coupon = new Coupon();
-        coupon.setId(rs.getLong(1));
-        coupon.setCompanyId(rs.getLong(2));
-        coupon.setCategory(rs.getInt(3));
-        coupon.setTitle(rs.getString(4));
-        coupon.setStartDate(rs.getDate(5));
-        coupon.setEndDate(rs.getDate(6));
-        coupon.setAmount(rs.getInt(7));
-        coupon.setDescription(rs.getString(8));
-        coupon.setPrice(rs.getDouble(9));
-        coupon.setImage(rs.getString(10));
-
-        return coupon;
     }
 
     @Override
@@ -177,11 +171,8 @@ public class CompanyDBDao implements CompanyDao {
         PreparedStatement ps = null;
         try {
             ps = connection.prepareStatement(Schema.SELECT_ID_COMPANIES);
-
             companies = new ArrayList<>();
-
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
                 long id = rs.getLong(1);
                 Company company = getCompany(id);
@@ -205,9 +196,7 @@ public class CompanyDBDao implements CompanyDao {
             ps = connection.prepareStatement(Schema.SELECT_COMPANY_BY_EMAIL_AND_PASSWORD);
             ps.setString(1, email);
             ps.setString(2, password);
-
             ResultSet rs = ps.executeQuery();
-
             if (rs.first()) {
                 company = resultSetToCompany(rs);
                 company.setCoupons(getCoupons(company.getId()));

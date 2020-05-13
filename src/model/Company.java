@@ -11,7 +11,7 @@ public class Company {
     private Set<Coupon> coupons;
 
     public Company() {
-        coupons=new HashSet<>();
+        coupons = new HashSet<>();
     }
 
     public Company(long id, String name, String email, String password) {
