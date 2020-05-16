@@ -3,6 +3,7 @@ package data.dao;
 import common.ex.SystemMalfunctionException;
 import data.ex.NoSuchCouponException;
 import data.ex.ZeroCouponAmountException;
+import model.Company;
 import model.Coupon;
 
 import java.sql.SQLException;
@@ -16,6 +17,8 @@ public interface CouponDao {
     void createCoupon(Coupon coupon) throws SystemMalfunctionException;
 
     void removeCoupon(long id);
+
+    void removeCompanyCoupons(long id);
 
     void updateCoupon(Coupon coupon) throws SystemMalfunctionException, SQLException, NoSuchCouponException;
 

@@ -80,7 +80,8 @@ public class Schema {
     public static final String GET_COUPON = "SELECT * FROM coupon_system.coupon where id = ";
     public static final String SELECT_COUPONS_BY_COMPANY_ID = "select * from " + TABLE_NAME_COUPON
             + " where " + COL_COMPANY_ID + "=?";
-    public static final String REMOVE_COUPON = "delete from coupon where id= ?";
+    public static final String REMOVE_COUPON = "delete from coupon where id = ?";
+    public static final String REMOVE_COMPANY_COUPONS = "delete from coupon where company_id = ?";
     public static final String GET_ALL_COUPONS = "SELECT * FROM coupon_system.coupon";
     public static final String GET_ALL_COUPONS_CATEG = "SELECT * FROM coupon_system.coupon WHERE category = ";
     public static final String INSERT_COUPON = "insert into " + TABLE_NAME_COUPON

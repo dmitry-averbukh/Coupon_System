@@ -81,8 +81,28 @@ public class CouponDBDao implements CouponDao {
     }
 
     @Override
-    public void updateCoupon(Coupon coupon) throws SystemMalfunctionException, SQLException, NoSuchCouponException {
+    public void removeCompanyCoupons(long id) {
         PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = ConnectionPool.getInstance()
+                    .getConnection()
+                    .prepareStatement(Schema.REMOVE_COMPANY_COUPONS);
+            preparedStatement.setLong(1, id);
+            int rowsAffective = preparedStatement.executeUpdate();
+            if (rowsAffective == 0) {
+                String msg = "There is no coupon with id %d";
+                throw new NoSuchCouponException(String.format(msg, id));
+            }
+        } catch (SQLException | SystemMalfunctionException | NoSuchCouponException e) {
+            e.printStackTrace();
+        } finally {
+            StatementUtils.close(preparedStatement);
+        }
+    }
+
+    @Override
+    public void updateCoupon(Coupon coupon) throws SystemMalfunctionException, SQLException, NoSuchCouponException {
+        PreparedStatement preparedStatement;
         preparedStatement = ConnectionPool.getInstance()
                 .getConnection()
                 .prepareStatement(Schema.UPDATE_COUPON);
@@ -95,7 +115,7 @@ public class CouponDBDao implements CouponDao {
 
     @Override
     public void decrementCouponAmount(long id) throws SystemMalfunctionException, SQLException, ZeroCouponAmountException {
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
         preparedStatement = ConnectionPool.getInstance()
                 .getConnection()
                 .prepareStatement(Schema.DECREMENT_COUPON);
@@ -117,7 +137,7 @@ public class CouponDBDao implements CouponDao {
                 .createStatement()
                 .executeQuery(Schema.GET_COUPON + id);
 
-        while (resultSetOfSelectedCoupon.first()) {
+        if (resultSetOfSelectedCoupon.first()) {
             return setCouponValuesOnStatement(resultSetOfSelectedCoupon);
         }
         throw new NoSuchCouponException("you don't have coupon with that id!");

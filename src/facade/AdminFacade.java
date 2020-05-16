@@ -1,5 +1,6 @@
 package facade;
 
+import common.ex.NoSuchCustomerException;
 import common.ex.SystemMalfunctionException;
 import data.dao.CompanyDao;
 import data.dao.CouponDao;
@@ -9,18 +10,17 @@ import data.db.CouponDBDao;
 import data.db.CustomerDBDao;
 import data.ex.InvalidLoginException;
 import data.ex.NoSuchCompanyException;
-import data.ex.NoSuchCouponException;
 import model.Company;
-import model.Coupon;
 import model.Customer;
 
+import javax.naming.NameAlreadyBoundException;
+import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Set;
 
 public class AdminFacade extends AbsFacade {
-    private CouponDao couponDao;
-    private CompanyDao companyDao;
-    private CustomerDao customerDao;
+    private final CouponDao couponDao;
+    private final CompanyDao companyDao;
+    private final CustomerDao customerDao;
 
     private AdminFacade() {
         couponDao = new CouponDBDao();
@@ -29,67 +29,58 @@ public class AdminFacade extends AbsFacade {
     }
 
     public static AbsFacade performLogin(String userName, String password) throws InvalidLoginException {
-        // TODO: 05-May-20 How can this if statement be improved?
         if (userName.equals("admin") && password.equals("1234"))
             return new AdminFacade();
         throw new InvalidLoginException("Unable to login with provided credentials as admin.");
     }
 
-//    public void removeCompany(long companyId) throws SystemMalfunctionException, NoSuchCompanyException {
-//        Set<Coupon> coupons = couponDao.getCoupons(companyId);
-//
-//        for (Coupon coupon : coupons) {
-//            try {
-//                couponDao.removeCoupon(coupon.getId());
-//            } catch (NoSuchCouponException e) {
-//                // Ignore since we know for sure that all the coupons belong to the specified company
-//            }
-//        }
-//        companyDao.removeCompany(companyId);
-//    }
-
-    public void createCompany(Company company) {
-        // TODO: 05-May-20 Implement.
-        // You can not create a company with a name that is already exists.
+    public void removeCompany(long companyId) throws SystemMalfunctionException, NoSuchCompanyException {
+        couponDao.removeCompanyCoupons(companyId);
+        companyDao.removeCompany(companyId);
     }
 
-    public void updateCompany(Company company) {
-        // TODO: 05-May-20 Implement.
-        // You can not change the name of a company.
+    public void createCompany(Company company) throws SystemMalfunctionException, NoSuchCompanyException, NameAlreadyBoundException {
+        for (int i = companyDao.getAllCompanies().size() - 1; i >= 0; i--) {
+            if (companyDao.getCompany(i).getName().equals(company.getName())) {
+                throw new NameAlreadyBoundException("You already have company with that name");
+            }
+        }
+        companyDao.createCompany(company);
     }
 
-    public Collection<Company> getAllCompanies() {
-        // TODO: 05-May-20 Implement.
-        return null;
+    public void updateCompany(Company company) throws SystemMalfunctionException, NoSuchCompanyException {
+        if (companyDao.getCompany(company.getId()).getName().equals(company.getName())) {
+            companyDao.updateCompany(company);
+        }
     }
 
-    public Company getCompany(long companyId) {
-        // TODO: 05-May-20 Implement.
-        return null;
+    public Collection<Company> getAllCompanies() throws SystemMalfunctionException {
+        return companyDao.getAllCompanies();
     }
 
-    public void createCustomer(Customer customer) {
-        // TODO: 05-May-20 Implement.
-        // You can not create a customer with an email that is already exists.
+    public Company getCompany(long companyId) throws NoSuchCompanyException, SystemMalfunctionException {
+        return companyDao.getCompany(companyId);
     }
 
-    public void updateCustomer(Customer customer) {
-        // TODO: 05-May-20 Implement.
-        // You can not change the name of a customer.
+    public void createCustomer(Customer customer) throws SystemMalfunctionException {
+        customerDao.createCustomer(customer);
     }
 
-    public void removeCustomer(long customerId) {
-        // TODO: 05-May-20 Implement.
+    public void updateCustomer(Customer customer) throws NoSuchCustomerException, SQLException, SystemMalfunctionException {
+        if (customerDao.getCustomer(customer.getId()).getFirstName().equals(customer.getFirstName()))
+            customerDao.updateCustomer(customer);
     }
 
-    public Collection<Customer> getAllCustomers() {
-        // TODO: 05-May-20 Implement.
-        return null;
+    public void removeCustomer(long customerId) throws NoSuchCustomerException {
+        customerDao.removeCustomer(customerId);
     }
 
-    public Customer getCustomer(long customerId) {
-        // TODO: 05-May-20 Implement.
-        return null;
+    public Collection<Customer> getAllCustomers() throws SystemMalfunctionException {
+        return customerDao.getAllCustomers();
+    }
+
+    public Customer getCustomer(long customerId) throws SQLException, SystemMalfunctionException {
+        return customerDao.getCustomer(customerId);
     }
 
 

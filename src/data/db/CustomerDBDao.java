@@ -14,7 +14,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@SuppressWarnings("LoopStatementThatDoesntLoop")
 public class CustomerDBDao implements CustomerDao {
 
     private static void applyCustomerValuesOnStatement(Customer customer, PreparedStatement ps) throws SQLException {
@@ -62,7 +61,7 @@ public class CustomerDBDao implements CustomerDao {
 
     @Override
     public void updateCustomer(Customer customer) throws SystemMalfunctionException, SQLException, NoSuchCustomerException {
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
         preparedStatement = ConnectionPool.getInstance()
                 .getConnection()
                 .prepareStatement(Schema.UPDATE_COUSTOMER);
@@ -104,20 +103,20 @@ public class CustomerDBDao implements CustomerDao {
 
     @Override
     public Collection<Customer> getAllCustomers() throws SystemMalfunctionException {
-        ArrayList<Customer> allCustumers = new ArrayList<>();
+        ArrayList<Customer> allCustomers = new ArrayList<>();
         Connection connection = null;
         try {
             connection = ConnectionPool.getInstance().getConnection();
             ResultSet resultSet = connection.createStatement().executeQuery(Schema.GET_ALL_CUSTOMERS);
             while (resultSet.next()) {
-                allCustumers.add(getCustomer(resultSet.getLong(1)));
+                allCustomers.add(getCustomer(resultSet.getLong(1)));
             }
         } catch (SystemMalfunctionException | SQLException e) {
             e.printStackTrace();
         } finally {
             ConnectionPool.getInstance().returnConnection(connection);
         }
-        return allCustumers;
+        return allCustomers;
 
     }
 
@@ -127,7 +126,7 @@ public class CustomerDBDao implements CustomerDao {
             throw new NoSuchCustomerException("you don't have coustomer with that id!");
         ArrayList<Coupon> customerCoupons = new ArrayList<>();
         final Connection connection = ConnectionPool.getInstance().getConnection();
-        ResultSet resultSetOfSelectedCoupon = null;
+        ResultSet resultSetOfSelectedCoupon;
         ResultSet resultSetOfSelectedCustomer = connection
                 .createStatement()
                 .executeQuery(Schema.GET_CUSTOMER_COUPONS + customerId);
@@ -161,7 +160,7 @@ public class CustomerDBDao implements CustomerDao {
             throw new NoSuchCouponException("You dont have coupon with that id!!!");
         }
         if (getCustomer(customerId) == null)
-            throw new NoSuchCustomerException("You dont have costumer with that id!!!" + customerId + "lol");
+            throw new NoSuchCustomerException("You dont have costumer with that id!!!");
         try {
             if (getCoupons(customerId).contains(couponDBDao.getCoupon(couponId)))
                 throw new CouponAlreadyPurchaseException("You already have that coupon!!!");

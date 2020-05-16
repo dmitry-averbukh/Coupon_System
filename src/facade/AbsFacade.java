@@ -1,6 +1,7 @@
 package facade;
 
 import common.LoginType;
+import common.ex.SystemMalfunctionException;
 import data.ex.InvalidLoginException;
 
 public abstract class AbsFacade {
@@ -14,7 +15,7 @@ public abstract class AbsFacade {
      * @return
      * @throws InvalidLoginException
      */
-    public static AbsFacade login(String userName, String password, int loginType) throws InvalidLoginException {
+    public static AbsFacade login(String userName, String password, int loginType) throws InvalidLoginException, SystemMalfunctionException {
         switch (loginType) {
             case LoginType.ADMIN:
                 return AdminFacade.performLogin(userName, password);
